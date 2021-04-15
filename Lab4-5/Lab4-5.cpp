@@ -32,25 +32,25 @@ myList::~myList()                           //Деструктор
 
 void myList::Add_item(int item){
     Node* temp = new Node;               //Выделение памяти под новый элемент структуры
-    temp->Next = NULL;                   //Указываем, что изначально по следующему адресу пусто
+    temp->Prev = NULL;                   //Указываем, что изначально по следующему адресу пусто
     temp->Value = item;                         //Записываем значение в структуру
 
     if (Head != NULL)                    //Если список не пуст
     {
-        temp->Prev = Tail;               //Указываем адрес на предыдущий элемент в соотв. поле
-        Tail->Next = temp;               //Указываем адрес следующего за хвостом элемента
-        Tail = temp;                     //Меняем адрес хвоста
+        temp->Next = Head;               //Указываем адрес на предыдущий элемент в соотв. поле
+        Head->Prev = temp;               //Указываем адрес следующего за хвостом элемента
+        Head = temp;                     //Меняем адрес хвоста
     }
     else //Если список пустой
     {
-        temp->Prev = NULL;               //Предыдущий элемент указывает в пустоту
+        temp->Next = NULL;               //Предыдущий элемент указывает в пустоту
         Head = Tail = temp;              //Голова=Хвост=тот элемент, что сейчас добавили
     }
 }
 
 void myList::Print_list() {
     Node* temp = Tail;                   //Временный указатель на адрес последнего элемента
-
+    cout << "List: ";
     temp = Head;                       //Временно указываем на адрес первого элемента
     while (temp != NULL)              //Пока не встретим пустое значение
     {
@@ -61,12 +61,47 @@ void myList::Print_list() {
 }
 
 void myList::Search_item(int item) {
-    //TODO
+    Node* temp = Head;
+    while (temp != NULL) {
+        if (temp ->Value == item)
+        {
+            cout << "Found" << endl;
+        }
+        temp = temp->Next;
+    }
 }
 
 void myList::Delete_item() {
-    //TODO
+    if ((Tail != NULL) && (Head != Tail)) {  //если список не пустой и не состоит из 1 элемента
+        Node* temp = Tail;	                            
+        Tail = Tail->Prev;	                                
+        Tail->Next = NULL;	                                
+        delete temp;	                                    
+        cout << "Succsesfully deleted" << endl;
+    }
+    else
+    {
+        if ((Head == Tail) && (Head != NULL)) {  //Если всего 1 элемент
+            Head->Next = NULL;
+            Head = NULL;
+            Tail = NULL;
+            delete Head;
+            delete Tail;
+            cout << "Succsesfully deleted" << endl;
+        }
+        else
+        {
+            if (Head == NULL && Tail == NULL)  //Если список пустой
+            {
+                cout << "Error. List is empty" << endl;
+            }
+        }
+    }
 }
+    
+       
+    
+
 
 int main()
 {
@@ -75,25 +110,28 @@ int main()
     auto item = 0;
     cout << "Choose an option:" << endl<<endl;
     cout << "1. Add item to List" << endl;
-    cout << "2. Remove item from List" << endl;
+    cout << "2. Remove last item from List" << endl;
     cout << "3. Search item in a List" << endl;
     cout << "4. Print List" << endl;
     cout << "5. Exit" << endl;
     cout << endl;
     auto a=-1;
-    bool While = true;
+    auto While = true;
     while (While) {
         cin >> a;
         switch (a)
         {
         case 1:
-            
+            cout << "Enter a number to add:" << endl;
+            cin >> item;
             lst.Add_item(item);
             break;
         case 2:
             lst.Delete_item();
             break;
         case 3:
+            cout << "Enter a number to find:" << endl;
+            cin >> item;
             lst.Search_item(item);
             break;
         case 4:
@@ -104,7 +142,7 @@ int main()
 
             break;
         default:
-            cout << "error\n";
+            cout << "Not an option" << endl;;
             While = false;
    
             break;
