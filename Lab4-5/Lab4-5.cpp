@@ -3,73 +3,117 @@
 using namespace std;
 
 
-struct list
-{
-    string field; // поле данных
-    struct list* next; // указатель на следующий элемент
-    struct list* prev; // указатель на предыдущий элемент
+struct Node {
+	int Value;
+	Node* Next, * Prev;
 };
 
-struct list* init(string a)  // а- значение первого узла
+class myList
 {
-    struct list* lst;
-    // выделение памяти под корень списка
-    lst = (struct list*)malloc(sizeof(struct list));
-    lst->field = a;
-    lst->next = NULL; // указатель на следующий узел
-    lst->prev = NULL; // указатель на предыдущий узел
-    return(lst);
+    Node* Head, * Tail;                 //Указатели на адреса начала списка и его конца
+public:
+    myList() :Head(NULL), Tail(NULL) {};    //Инициализируем адреса как пустые
+    ~myList();                           //Прототип деструктора
+    void Print_list();                       //Прототип функции отображения списка на экране
+    void Add_item(int item);
+    void Search_item(int item);
+    void Delete_item();
+};
+
+myList::~myList()                           //Деструктор
+{
+    while (Head)                       //Пока по адресу на начало списка что-то есть
+    {
+        Tail = Head->Next;             //Резервная копия адреса следующего звена списка
+        delete Head;                   //Очистка памяти от первого звена
+        Head = Tail;                   //Смена адреса начала на адрес следующего элемента
+    }
 }
 
-struct list* addelem(list* lst, int number)
-{
-    struct list* temp, * p;
-    temp = (struct list*)malloc(sizeof(list));
-    p = lst->next; // сохранение указателя на следующий узел
-    lst->next = temp; // предыдущий узел указывает на создаваемый
-    temp->field = number; // сохранение поля данных добавляемого узла
-    temp->next = p; // созданный узел указывает на следующий узел
-    temp->prev = lst; // созданный узел указывает на предыдущий узел
-    if (p != NULL)
-        p->prev = temp;
-    return(temp);
+void myList::Add_item(int item){
+    Node* temp = new Node;               //Выделение памяти под новый элемент структуры
+    temp->Next = NULL;                   //Указываем, что изначально по следующему адресу пусто
+    temp->Value = item;                         //Записываем значение в структуру
+
+    if (Head != NULL)                    //Если список не пуст
+    {
+        temp->Prev = Tail;               //Указываем адрес на предыдущий элемент в соотв. поле
+        Tail->Next = temp;               //Указываем адрес следующего за хвостом элемента
+        Tail = temp;                     //Меняем адрес хвоста
+    }
+    else //Если список пустой
+    {
+        temp->Prev = NULL;               //Предыдущий элемент указывает в пустоту
+        Head = Tail = temp;              //Голова=Хвост=тот элемент, что сейчас добавили
+    }
 }
 
-struct list* deletelem(list* lst)
-{
-    struct list* prev, * next;
-    prev = lst->prev; // узел, предшествующий lst
-    next = lst->next; // узел, следующий за lst
-    if (prev != NULL)
-        prev->next = lst->next; // переставляем указатель
-    if (next != NULL)
-        next->prev = lst->prev; // переставляем указатель
-    free(lst); // освобождаем память удаляемого элемента
-    return(prev);
+void myList::Print_list() {
+    Node* temp = Tail;                   //Временный указатель на адрес последнего элемента
+
+    temp = Head;                       //Временно указываем на адрес первого элемента
+    while (temp != NULL)              //Пока не встретим пустое значение
+    {
+        cout << temp->Value << " ";        //Выводим каждое считанное значение на экран
+        temp = temp->Next;             //Смена адреса на адрес следующего элемента
+    }
+    cout << "\n";
 }
 
-struct list* deletehead(list* root)
-{
-    struct list* temp;
-    temp = root->next;
-    temp->prev = NULL;
-    free(root);   // освобождение памяти текущего корня
-    return(temp); // новый корень списка
+void myList::Search_item(int item) {
+    //TODO
 }
 
-
-void listprint(list * lst)
-{
-    struct list* p;
-    p = lst;
-    do {
-        printf("%d ", p->field); // вывод значения элемента p
-        p = p->next; // переход к следующему узлу
-    } while (p != NULL); // условие окончания обхода
+void myList::Delete_item() {
+    //TODO
 }
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    system("CLS");
+    myList lst;
+    auto item = 0;
+    cout << "Choose an option:" << endl<<endl;
+    cout << "1. Add item to List" << endl;
+    cout << "2. Remove item from List" << endl;
+    cout << "3. Search item in a List" << endl;
+    cout << "4. Print List" << endl;
+    cout << "5. Exit" << endl;
+    cout << endl;
+    auto a=-1;
+    bool While = true;
+    while (While) {
+        cin >> a;
+        switch (a)
+        {
+        case 1:
+            
+            lst.Add_item(item);
+            break;
+        case 2:
+            lst.Delete_item();
+            break;
+        case 3:
+            lst.Search_item(item);
+            break;
+        case 4:
+            lst.Print_list();
+            break;
+        case 5:
+            While = false;
+
+            break;
+        default:
+            cout << "error\n";
+            While = false;
+   
+            break;
+        }
+    }
+      
+   
+    //TODO сделать ввод в список из файла
+   
+
 }
 
